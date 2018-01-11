@@ -1,4 +1,5 @@
 # MLADV_finalpj
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
 
 1. ppca_weng 包含两个版本的EM PPCA，simple_PPCA类和PPCA。
 
