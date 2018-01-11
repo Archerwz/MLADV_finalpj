@@ -12,7 +12,7 @@ def cosine_similarity(x, y):
     return round(numerator / float(denominator), 3)
 
 # sigma=0
-class standard_PPCA():
+class simple_PPCA():
     def __init__(self):
         self.data = None
         self.stddata = None
