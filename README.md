@@ -12,3 +12,9 @@
 另外两个指标trustworthiness, continuity暂时不用（计算稍微复杂）。
 
 4. 原数据维度为D，保留的主成分从1逐渐增加到D，最高为20。
+
+5. 运行方法为 python finalpj.py [id]。 使用simple PPCA，迭代1000次。可将73，74行代码更改为使用general的PPCA。
+```
+pp = PPCA()
+# pp = simple_PPCA()
+```
