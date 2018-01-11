@@ -17,3 +17,6 @@
 pp = PPCA()
 # pp = simple_PPCA()
 ```
+
+6. 运行示意图如下，使用digit数据集。
+![](figure/example_digits.png)
