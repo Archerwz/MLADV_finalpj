@@ -23,6 +23,7 @@ class simple_PPCA():
         self.M = None
         self.EZ = None
         self.redim = None
+        np.random.seed(10)
 
     def fit(self, data, reduce_dim=2):
         self.n = data.shape[0]
@@ -96,6 +97,7 @@ class PPCA():
         self.EZnZnT = None
         # redim: M
         self.redim = None
+        np.random.seed(10)
 
     def fit(self, data, reduce_dim=2):
         self.n = data.shape[0]
