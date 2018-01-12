@@ -52,7 +52,7 @@ class simple_PPCA():
             if self.EZ.shape != (self.redim, self.n):
                 print(self.EZ.shape)
                 raise RuntimeError("The size of EZ is wrong")
-            # self.M = np.dot(self.W.T, self.W)
+            self.M = np.dot(self.W.T, self.W)
 
             # M step
             # self.W = np.dot(np.dot(self.stddata.T, self.EZ.T), np.linalg.pinv(np.dot(self.EZ, self.EZ.T)))
@@ -68,9 +68,16 @@ class simple_PPCA():
                 # old_W = self.W
                 stop = stop + 1
 
-    def transform(self):
-        latent_z = np.dot(np.linalg.pinv(self.W), self.stddata)
-        if latent_z.shape != (self.redim, self.n):
+    def transform(self, newinputx=None):
+        if newinputx == None:
+            latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.stddata)
+        else:
+            if newinputx.shape[1] != self.dim:
+                raise RuntimeError("The shape of input X should be KxD")
+            else:
+                newinputx = newinputx.reshape(self.dim, -1)
+                latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), (newinputx - self.mean))
+        if latent_z.shape[0] != self.redim:
             raise RuntimeError("The size of latent z is wrong")
         return latent_z.T
 
@@ -170,8 +177,16 @@ class PPCA():
                 # old_W = self.W
                 stop = stop + 1
 
-    def transform(self):
-        latent_z = np.dot(np.linalg.pinv(self.W), self.stddata)
-        if latent_z.shape != (self.redim, self.n):
+    # newinputx should be DxK
+    def transform(self, newinputx=None):
+        if newinputx == None:
+            latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.stddata)
+        else:
+            if newinputx.shape[1] != self.dim:
+                raise RuntimeError("The shape of input X should be KxD")
+            else:
+                newinputx = newinputx.reshape(self.dim, -1)
+                latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), (newinputx - self.mean))
+        if latent_z.shape[0] != self.redim:
             raise RuntimeError("The size of latent z is wrong")
         return latent_z.T
