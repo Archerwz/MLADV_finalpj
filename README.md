@@ -23,6 +23,6 @@ pp = PPCA()
 
 7. 待修改：
 
-  + The Olivetti faces dataset
-  + Mnist（太大，算GE的时候太慢
-  + Generalization error 的计算需要再斟酌一下，是否需要使用测试集
+  + 加入real world dataset: The Olivetti faces dataset(400x4069)
+  + 加入Mnist（数据集太大，算GE的时候太慢）(70000x784)
+  + Generalization error 的计算需要再斟酌一下，是否需要使用测试集
