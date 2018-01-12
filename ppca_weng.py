@@ -62,7 +62,7 @@ class simple_PPCA():
             # check converge or not
             # actually we need to use E[lnp(X,Z|mu,W,sigma)] to check convergence
             # if (1 - cosine_similarity(self.W.reshape(-1), old_W.reshape(-1))) < 0.00001:
-            if stop > 1000:
+            if stop > 10000:
                 break
             else:
                 # old_W = self.W
