@@ -22,6 +22,7 @@ pp = PPCA()
 ![](figure/example_digits.png)
 
 7. 待修改：
+
   + The Olivetti faces dataset
-  + Mnist（太大，算GE的时候太慢）
-  + Generalization error 的计算需要再斟酌一下，是否需要使用测试集
+  + Mnist（太大，算GE的时候太慢
+  + Generalization error 的计算需要再斟酌一下，是否需要使用测试集
