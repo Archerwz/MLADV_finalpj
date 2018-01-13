@@ -60,14 +60,12 @@ def testwithToy(dataname):
     print("We are now increase the principle component from 1 to {}.".format(remain_dim))
     GE_standard = np.zeros(remain_dim)
     GE_ppca = np.zeros(remain_dim)
-    # GE_digits3 = np.zeros(remain_dim)
-    # if using digits, will come up warning. (some pixel is always 0 in the dataset, which will cause 0 var and zero mean in that dim)
     for i in range(remain_dim):
         # standard PCA
         print("==> remain component number:{}".format(i+1))
         skpca = PCA(n_components=i + 1)
-        skreduce_X_digits = skpca.fit_transform(X)
-        GE_standard[i] = calcGE(skreduce_X_digits, y)
+        skreduce_X = skpca.fit_transform(X)
+        GE_standard[i] = calcGE(skreduce_X, y)
         print("Generation error of standard PCA --> {}".format(GE_standard[i]))
         # ppca use EM
         # pp = PPCA() # use general version with sigma
@@ -77,7 +75,6 @@ def testwithToy(dataname):
         # print(ppcareduce_X.shape)
         GE_ppca[i] = calcGE(ppcareduce_X, y)
         print("Generation error of PPCA --> {}".format(GE_ppca[i]))
-        # GE_digits3[i] = calcGE(X_digits, y_digits)
 
     line_standard, = plt.plot(np.arange(1, remain_dim + 1), GE_standard, label='Line Standard PCA')
     line_emppca, = plt.plot(np.arange(1, remain_dim + 1), GE_ppca, label='Line EM PPCA')
