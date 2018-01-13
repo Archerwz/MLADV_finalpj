@@ -1,8 +1,8 @@
-# author: ZEHANG WENG
+# include PPCA, kernel PCA, beyesian PCA
 import numpy as np
 from math import *
 
-
+# </author: ZEHANG WENG>
 def square_rooted(x):
     return round(sqrt(sum([a * a for a in x])), 3)
 
@@ -177,7 +177,8 @@ class PPCA():
                 # old_W = self.W
                 stop = stop + 1
 
-    # newinputx should be DxK
+    # newinputx should be KxD
+    # output KxM
     def transform(self, newinputx=None):
         if newinputx == None:
             latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.stddata)
@@ -190,3 +191,35 @@ class PPCA():
         if latent_z.shape[0] != self.redim:
             raise RuntimeError("The size of latent z is wrong")
         return latent_z.T
+# </ Weng>
+
+# Zhou Wang
+# newinputx should be KxD
+# output KxM
+class kernel_PPCA():
+    def __init__(self):
+        self.data = None
+        self.stddata = None
+        self.n = None
+        self.dim = None
+        self.mean = None
+        self.redim = None
+        np.random.seed(10)
+
+    def fit(self, data, reduce_dim=2):
+        # input data: NxD
+        pass
+    def transform(self, newinputx=None):
+        # newinput: KxD
+        pass
+
+# Beyesian Zesen Wang
+# newinputx should be KxD
+# output KxM
+class beyesian_PPCA():
+    def __init__(self):
+        pass
+    def fit(self, data, reduce_dim=2):
+        pass
+    def transform(self, newinputx=None):
+        pass
