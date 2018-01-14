@@ -1,5 +1,13 @@
 # MLADV_finalpj
 
+- 进度
+  - PPCA EM(complete 100%)
+  - Kernel PCA EM(complete 100% -> negative eigen value when using eig)
+  - Bayesian PCA(complete 99% -> speed)
+  - Evaluation method(on going 50% -> 1-NN GE? Kmean-like method? 2d visulization? inflection point? M determine? classification?)
+  - Essay framework discussion(tomorrow)
+  - Essay(0%)
+
 1. ppca_weng 包含两个版本的EM PPCA，simple_PPCA类和PPCA。EM停止迭代条件严格来说应是判断参数或者Q收敛与否，这里暂时只是简单设置迭代次数，simple PCPA是10000次，PPCA是迭代100次。
 
   + simple_PPCA: 不考虑sigma，在EM迭代更新中，运算皆能使用矩阵运算进行加速。
