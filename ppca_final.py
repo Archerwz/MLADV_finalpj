@@ -172,7 +172,7 @@ class PPCA():
                 EZn = self.EZ[:,i].reshape(-1,1)
                 # get EZnZnt, MxM
                 EZnZnt = self.EZZT[:,]
-                newsigma = newsigma + l2normXn - 2 * np.dot(np.dot(EZn.T, self.W.T), stdXn) + np.dot(np.dot(self.EZnZnT[i], self.W.T), self.W)
+                newsigma = newsigma + l2normXn - 2 * np.dot(np.dot(EZn.T, self.W.T), stdXn) + np.trace(np.dot(np.dot(self.EZnZnT[i], self.W.T), self.W))
             self.sigma = newsigma/(self.n*self.dim)
             # check converge or not
             # actually we need to use E[lnp(X,Z|mu,W,sigma)] to check convergence
