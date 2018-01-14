@@ -2,6 +2,13 @@
 import numpy as np
 from math import *
 
+from sklearn.datasets import *
+from sklearn.decomposition import PCA
+from scipy import spatial
+import numpy as np
+#from ppca_weng import simple_PPCA, PPCA
+import argparse
+
 # </author: ZEHANG WENG>
 def square_rooted(x):
     return round(sqrt(sum([a * a for a in x])), 3)
@@ -218,6 +225,7 @@ class kernel_PPCA():
 # output KxM
 class beyesian_PPCA():
     def __init__(self):
+        np.random.seed(10)
         pass
         
     def fit(self, data, reduce_dim=2):
@@ -232,34 +240,46 @@ class beyesian_PPCA():
         self.W = 10 * np.random.random((self.d, self.m)) - 5
         self.alpha = 10 * np.random.random((self.m, ))
         self.sigma = np.random.random() * 0.01
+        iteration = 0
         while True:
-            M = np.dot(self.w.T, self.w) + self.sigma * np.eye(self.m, self.m)
-            Z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.nData)
-            ZZT = [np.zeros(self.m, self.m) for i in range(self.n)]
+            M = np.dot(self.W.T, self.W) + self.sigma * np.eye(self.m, self.m)
+            Z = np.dot(np.dot(np.linalg.pinv(M), self.W.T), self.nData)
+            ZZT = [np.zeros((self.m, self.m)) for i in range(self.n)]
             for i in range(self.n):
-                ZZT[i] = sigma * np.linalg.inv(M) + np.dot(Z[:, i, None], Z[:, i, None].T)
+                ZZT[i] = self.sigma * np.linalg.inv(M) + np.dot(Z[:, i, None], Z[:, i, None].T)
             # update alpha
             for i in range(self.m):
                 self.alpha[i] = self.d / np.dot(self.W[:, i], self.W[:, i])
             # update W
             A = np.diag(self.alpha)
             left = np.zeros((self.d, self.m))
-            right = sigma * A
+            right = self.sigma * A
             for i in range(self.n):
-                left = left + np.dot(self.nData[:, i, None], Z[:, i, None])
+                left = left + np.dot(self.nData[:, i, None], Z[:, i, None].T)
                 right = right + ZZT[i]
             self.W = np.dot(left, np.linalg.inv(right))
             # update sigma
             self.sigma = 0.
             for i in range(self.n):
-                self.sigma = self.sigma + np.dot(self.nData[:, i], self.nData[:, i]) - 2 * Z
+                self.sigma = self.sigma + np.dot(self.nData[:, i], self.nData[:, i]) \
+                        - 2 * np.dot(np.dot(Z[:, i, None].T, self.W.T), self.nData[:, i, None]) \
+                        + np.trace(np.dot(np.dot(ZZT[i], self.W.T), self.W))
+            self.sigma = self.sigma / self.n / self.d
+            if iteration > 1000:
+                break
+            iteration += 1
         pass
     def transform(self, newinputx=None):
         pass
         
         
-        
-        
+if __name__ == "__main__":
+    data = load_iris()
+    y = data.target
+    X = data.data
+    bpca = beyesian_PPCA()
+    bpca.fit(X, 3)
+    print (bpca.alpha)
         
         
         
