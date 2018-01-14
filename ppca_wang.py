@@ -233,7 +233,8 @@ class beyesian_PPCA():
         # reduce: d -> m
         self.n = data.shape[0]
         self.d = data.shape[1]
-        self.m = reduce_dim
+        self.m = self.d - 1
+        self.realM = reduce_dim
         self.mean = np.mean(data, axis=0)
         self.data = data.T
         self.nData = (data - self.mean).T
@@ -242,11 +243,11 @@ class beyesian_PPCA():
         self.sigma = np.random.random() * 0.01
         iteration = 0
         while True:
-            M = np.dot(self.W.T, self.W) + self.sigma * np.eye(self.m, self.m)
-            Z = np.dot(np.dot(np.linalg.pinv(M), self.W.T), self.nData)
+            self.M = np.dot(self.W.T, self.W) + self.sigma * np.eye(self.m, self.m)
+            Z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.nData)
             ZZT = [np.zeros((self.m, self.m)) for i in range(self.n)]
             for i in range(self.n):
-                ZZT[i] = self.sigma * np.linalg.inv(M) + np.dot(Z[:, i, None], Z[:, i, None].T)
+                ZZT[i] = self.sigma * np.linalg.inv(self.M) + np.dot(Z[:, i, None], Z[:, i, None].T)
             # update alpha
             for i in range(self.m):
                 self.alpha[i] = self.d / np.dot(self.W[:, i], self.W[:, i])
@@ -265,11 +266,20 @@ class beyesian_PPCA():
                         - 2 * np.dot(np.dot(Z[:, i, None].T, self.W.T), self.nData[:, i, None]) \
                         + np.trace(np.dot(np.dot(ZZT[i], self.W.T), self.W))
             self.sigma = self.sigma / self.n / self.d
-            if iteration > 1000:
+            if iteration > 100:
                 break
             iteration += 1
         pass
     def transform(self, newinputx=None):
+        if newinputx == None:
+            index = np.argsort(self.alpha)
+            selectW = np.zeros((self.d, 0))
+            for i in range(self.realM):
+                selectW = np.insert(selectW, [i], self.W[:,index[i], None], axis = 1)
+            #print (selectW)
+            self.M = np.dot(selectW.T, selectW) + self.sigma * np.eye(self.realM, self.realM)
+            #print (self.M)
+            return np.dot(np.dot(np.linalg.inv(self.M), selectW.T), self.nData)
         pass
         
         
@@ -277,11 +287,15 @@ if __name__ == "__main__":
     data = load_iris()
     y = data.target
     X = data.data
+
     bpca = beyesian_PPCA()
-    bpca.fit(X, 3)
+    bpca.fit(X, 1)
+
     print (bpca.alpha)
-        
-        
+    print (np.argsort(bpca.alpha))
+    
+    print (bpca.transform())
+
         
         
         

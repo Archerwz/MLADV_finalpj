@@ -4,6 +4,7 @@ from sklearn.decomposition import PCA
 from scipy import spatial
 import numpy as np
 from ppca_weng import simple_PPCA, PPCA
+from ppca_wang import beyesian_PPCA
 import argparse
 
 import matplotlib.pyplot as plt
@@ -54,12 +55,13 @@ def testwithToy(dataname):
     if dim > 20:
         remain_dim = 10
     else:
-        remain_dim = dim
+        remain_dim = dim - 1
 
     print("The original dimension: {}.".format(dim))
     print("We are now increase the principle component from 1 to {}.".format(remain_dim))
     GE_standard = np.zeros(remain_dim)
     GE_ppca = np.zeros(remain_dim)
+    GE_bpca = np.zeros(remain_dim)
     for i in range(remain_dim):
         # standard PCA
         print("==> remain component number:{}".format(i+1))
@@ -72,14 +74,22 @@ def testwithToy(dataname):
         pp = simple_PPCA() # use simple version without sigma
         pp.fit(X, i + 1)
         ppcareduce_X = pp.transform()
-        # print(ppcareduce_X.shape)
+        #print(ppcareduce_X.shape)
         GE_ppca[i] = calcGE(ppcareduce_X, y)
         print("Generation error of PPCA --> {}".format(GE_ppca[i]))
+        # Bayesian PCA use EM
+        bpca = beyesian_PPCA()
+        bpca.fit(X, i + 1)
+        bpcaLatent = bpca.transform()
+        print(bpcaLatent.shape)
+        GE_bpca[i] = calcGE(bpcaLatent, y)
+        print("Generation error of BPCA --> {}".format(GE_bpca[i]))
 
     line_standard, = plt.plot(np.arange(1, remain_dim + 1), GE_standard, label='Line Standard PCA')
     line_emppca, = plt.plot(np.arange(1, remain_dim + 1), GE_ppca, label='Line EM PPCA')
+    line_bpca, = plt.plot(np.arange(1, remain_dim + 1), GE_bpca, label='Line Bayesian PCA')    
 
-    plt.legend(handles=[line_standard, line_emppca])
+    plt.legend(handles=[line_standard, line_emppca, line_bpca])
     plt.xlabel('Remained number of component')
     plt.xlabel('Generation error with 1-NN')
     plt.grid()
