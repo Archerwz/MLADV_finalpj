@@ -4,7 +4,7 @@
   - PPCA EM(complete 100%)
   - Kernel PCA EM(complete 100% -> negative eigen value when using eig)
   - Bayesian PCA(complete 99% -> speed)
-  - Evaluation method(on going 50% -> 1-NN GE? Kmean-like method? 2d visulization? inflection point? M determine? classification?)
+  - Evaluation method(on going 50% -> 1-NN GE? Kmean-like method? 2d visulization? inflection point? M determine? classification? real world data?)
   - Essay framework discussion(tomorrow)
   - Essay(0%)
 
