@@ -3,8 +3,7 @@ from sklearn.datasets import *
 from sklearn.decomposition import PCA
 from scipy import spatial
 import numpy as np
-from ppca_weng import simple_PPCA, PPCA
-from ppca_wang import beyesian_PPCA
+from ppca_final import simple_PPCA, PPCA, bayesian_PPCA
 import argparse
 
 import matplotlib.pyplot as plt
@@ -62,28 +61,32 @@ def testwithToy(dataname):
     GE_standard = np.zeros(remain_dim)
     GE_ppca = np.zeros(remain_dim)
     GE_bpca = np.zeros(remain_dim)
+    
+    
+    bpca = bayesian_PPCA()
+    
     for i in range(remain_dim):
         # standard PCA
         print("==> remain component number:{}".format(i+1))
         skpca = PCA(n_components=i + 1)
         skreduce_X = skpca.fit_transform(X)
         GE_standard[i] = calcGE(skreduce_X, y)
-        print("Generation error of standard PCA --> {}".format(GE_standard[i]))
+        print("Generalization error of standard PCA --> {}".format(GE_standard[i]))
         # ppca use EM
         # pp = PPCA() # use general version with sigma
         pp = simple_PPCA() # use simple version without sigma
         pp.fit(X, i + 1)
         ppcareduce_X = pp.transform()
-        #print(ppcareduce_X.shape)
+        print(ppcareduce_X.shape)
         GE_ppca[i] = calcGE(ppcareduce_X, y)
-        print("Generation error of PPCA --> {}".format(GE_ppca[i]))
+        print("Generalization error of PPCA --> {}".format(GE_ppca[i]))
         # Bayesian PCA use EM
-        bpca = beyesian_PPCA()
+        
         bpca.fit(X, i + 1)
         bpcaLatent = bpca.transform()
         print(bpcaLatent.shape)
         GE_bpca[i] = calcGE(bpcaLatent, y)
-        print("Generation error of BPCA --> {}".format(GE_bpca[i]))
+        print("Generalization error of BPCA --> {}".format(GE_bpca[i]))
 
     line_standard, = plt.plot(np.arange(1, remain_dim + 1), GE_standard, label='Line Standard PCA')
     line_emppca, = plt.plot(np.arange(1, remain_dim + 1), GE_ppca, label='Line EM PPCA')
@@ -91,12 +94,12 @@ def testwithToy(dataname):
 
     plt.legend(handles=[line_standard, line_emppca, line_bpca])
     plt.xlabel('Remained number of component')
-    plt.xlabel('Generation error with 1-NN')
+    plt.xlabel('Generalization error with 1-NN')
     plt.grid()
     plt.show()
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="test generation error of PPCA and standard PCA in toy dataset")
+    parser = argparse.ArgumentParser(description="test Generalization error of PPCA and standard PCA in toy dataset")
     parser.add_argument("dataset_id", type=int, help="the id number of toy dataset")
     dataset_name = datasets_toy[parser.parse_args().dataset_id]
     print("Test on the toy dataset: {}".format(dataset_name))
