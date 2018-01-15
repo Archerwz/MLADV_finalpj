@@ -208,16 +208,51 @@ class kernel_PPCA():
         self.stddata = None
         self.n = None
         self.dim = None
-        self.mean = Noneredim
-        self.redim = None
-        np.random.seed(10)
+        self.mean = None        self.redim = None
+        self.K_central = None
+        self.eigvals = None
+        self.eigvects = None
+        # np.random.seed(10)
+
 
     def fit(self, data, reduce_dim=2):
         # input data: NxD
-        pass
+        self.n = data.shape[0]
+        self.dim = data.shape[1]        self.redim = reduce_dim
+        self.data = data
+        K = np.zeros((self.n,self.n))
+        for i in range(self.n):
+            for j in range(self.n):
+                K[i,j] = exp(np.dot((data[i]-data[j]),(data[i]-data[j]).T)/(-2*0.5**2))
+                # K[i,j] = (np.dot(data[i],data[j])+1)
+        IM = np.ones((self.n,self.n))/self.n
+        self.K_central = K - np.dot(IM,K) - np.dot(K,IM) + np.dot(np.dot(IM,K),IM)
+        self.eigvals,self.eigvects = np.linalg.eigh(self.K_central)
+        # print(self.eigvals,self.eigvects)
+        eigval_index = np.argsort(self.eigvals)
+        eigval_index = eigval_index[-1: -(self.redim+1): -1]
+        # print(self.eigvals)
+        self.eigvects = self.eigvects[:, eigval_index]
+        for i in range(self.redim):
+            if self.eigvals[eigval_index[i]] < 1e-6:
+                break
+            else:
+                self.eigvects[:, i] = self.eigvects[:, i]/sqrt(self.eigvals[eigval_index[i]]*self.n)
+        # print(self.eigvects)
+
+
     def transform(self, newinputx=None):
         # newinput: KxD
-        pass
+        if newinputx is None:
+            projection = np.dot(self.K_central, self.eigvects)
+        else:
+            N = newinputx.shape[0]
+            K = np.zeros((N, self.n))
+            for i in range(N):
+                for j in range(self.n):
+                    K[i, j] = exp(np.dot((self.data[j] - newinputx[i]), (self.data[j] - newinputx[i]).T) / (-2 * 0.5 ** 2))
+            projection = np.dot(K,self.eigvects)
+        return projection
 
 # Beyesian Zesen Wang
 # newinputx should be KxD
