@@ -76,7 +76,7 @@ class simple_PPCA():
                 stop = stop + 1
 
     def transform(self, newinputx=None):
-        if newinputx == None:
+        if newinputx is None:
             latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.stddata)
         else:
             if newinputx.shape[1] != self.dim:
@@ -186,7 +186,7 @@ class PPCA():
     # newinputx should be KxD
     # output KxM
     def transform(self, newinputx=None):
-        if newinputx == None:
+        if newinputx is None:
             latent_z = np.dot(np.dot(np.linalg.pinv(self.M), self.W.T), self.stddata)
         else:
             if newinputx.shape[1] != self.dim:
@@ -279,7 +279,7 @@ class bayesian_PPCA():
             
         pass
     def transform(self, newinputx=None):
-        if newinputx == None:
+        if newinputx is None:
             index = np.argsort(self.alpha)
             selectW = np.zeros((self.d, 0))
             for i in range(self.realM):
