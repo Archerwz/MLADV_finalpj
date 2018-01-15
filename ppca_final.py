@@ -35,7 +35,7 @@ class simple_PPCA():
     def fit(self, data, reduce_dim=2):
         self.n = data.shape[0]
         self.dim = data.shape[1]
-        self.data = reduce_dim
+        self.data = data
         self.redim = reduce_dim
         # calculate the mean of input data
         self.mean = np.mean(data, axis=0)
